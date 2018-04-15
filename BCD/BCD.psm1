@@ -1851,9 +1851,9 @@ Outputs one or more BcdElement objects.
     )
 
     $CimMethodArgs = @{}
-    $CimSessionComputerName = $BCDStore.GetCimSessionComputerName()
+    $CimSessionComputerName = $BCDObject.GetCimSessionComputerName()
 
-    if ($CimSessionComputerName) { $CimMethodArgs['CimSession'] = Get-CimSession -InstanceId $BCDStore.GetCimSessionInstanceId() }
+    if ($CimSessionComputerName) { $CimMethodArgs['CimSession'] = Get-CimSession -InstanceId $BCDObject.GetCimSessionInstanceId() }
     
     $BCDElements = $null
 
