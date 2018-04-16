@@ -2624,3 +2624,4 @@ Export-ModuleMember -Function 'New-BCDStore',
                               'Remove-BCDElement'
 
 . "$PSScriptRoot\Helpers\BCDHelperFuncs.ps1"
+. "$PSScriptRoot\UseCases\Debugging.ps1"

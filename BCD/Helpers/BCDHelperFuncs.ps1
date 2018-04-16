@@ -17,10 +17,6 @@ License: BSD 3-Clause
 
 Specifies the BCDStore object returned from the Get-BCDStore function. If -BCDStore is not specified, the system BCD store will be used.
 
-.PARAMETER CimSession
-
-Specifies the CIM session to use for this function. Enter a variable that contains the CIM session or a command that creates or gets the CIM session, such as the New-CimSession or Get-CimSession cmdlets. For more information, see about_CimSessions.
-
 .EXAMPLE
 
 Get-BCDBootManager
@@ -39,10 +35,6 @@ Microsoft.Management.Infrastructure.CimInstance#ROOT/WMI/BcdStore
 
 Accepts a single BCD store element from the pipeline.
 
-Microsoft.Management.Infrastructure.CimSession
-
-Accepts a single CIM session instance from the pipeline.
-
 .OUTPUTS
 
 Microsoft.Management.Infrastructure.CimInstance#ROOT/WMI/BcdObject
@@ -51,22 +43,18 @@ Outputs one or more Windows boot applications in the form of BCD object instance
 #>
 
     [OutputType('Microsoft.Management.Infrastructure.CimInstance#ROOT/WMI/BcdObject')]
-    [CmdletBinding(DefaultParameterSetName = 'BCDStore')]
+    [CmdletBinding()]
     param (
-        [Parameter(ValueFromPipeline, ParameterSetName = 'BCDStore')]
+        [Parameter(ValueFromPipeline)]
         [PSTypeName('Microsoft.Management.Infrastructure.CimInstance#ROOT/WMI/BcdStore')]
         [Microsoft.Management.Infrastructure.CimInstance]
-        $BCDStore,
-
-        [Parameter(ParameterSetName = 'CIMSession')]
-        [Alias('Session')]
-        [Microsoft.Management.Infrastructure.CimSession]
-        $CimSession
+        $BCDStore
     )
 
     $CimMethodArgs = @{}
+    $CimSessionComputerName = $BCDStore.GetCimSessionComputerName()
 
-    if ($CimSession) { $CimMethodArgs['CimSession'] = $CimSession }
+    if ($CimSessionComputerName) { $CimMethodArgs['CimSession'] = Get-CimSession -InstanceId $BCDStore.GetCimSessionInstanceId() }
 
     $BCDStoreToUse = $null
 
@@ -101,10 +89,6 @@ Specifies a specific type of boot application to return: Current or Default.
 
 Specifies the BCDStore object returned from the Get-BCDStore function. If -BCDStore is not specified, the system BCD store will be used.
 
-.PARAMETER CimSession
-
-Specifies the CIM session to use for this function. Enter a variable that contains the CIM session or a command that creates or gets the CIM session, such as the New-CimSession or Get-CimSession cmdlets. For more information, see about_CimSessions.
-
 .EXAMPLE
 
 Get-BCDBootApplication
@@ -129,10 +113,6 @@ Microsoft.Management.Infrastructure.CimInstance#ROOT/WMI/BcdStore
 
 Accepts a single BCD store element from the pipeline.
 
-Microsoft.Management.Infrastructure.CimSession
-
-Accepts a single CIM session instance from the pipeline.
-
 .OUTPUTS
 
 Microsoft.Management.Infrastructure.CimInstance#ROOT/WMI/BcdObject
@@ -141,26 +121,22 @@ Outputs one or more Windows boot applications in the form of BCD object instance
 #>
 
     [OutputType('Microsoft.Management.Infrastructure.CimInstance#ROOT/WMI/BcdObject')]
-    [CmdletBinding(DefaultParameterSetName = 'BCDStore')]
+    [CmdletBinding()]
     param (
         [String]
         [ValidateSet('Current', 'Default')]
         $Type,
 
-        [Parameter(ValueFromPipeline, ParameterSetName = 'BCDStore')]
+        [Parameter(ValueFromPipeline)]
         [PSTypeName('Microsoft.Management.Infrastructure.CimInstance#ROOT/WMI/BcdStore')]
         [Microsoft.Management.Infrastructure.CimInstance]
-        $BCDStore,
-
-        [Parameter(ParameterSetName = 'CIMSession')]
-        [Alias('Session')]
-        [Microsoft.Management.Infrastructure.CimSession]
-        $CimSession
+        $BCDStore
     )
 
     $CimMethodArgs = @{}
+    $CimSessionComputerName = $BCDStore.GetCimSessionComputerName()
 
-    if ($CimSession) { $CimMethodArgs['CimSession'] = $CimSession }
+    if ($CimSessionComputerName) { $CimMethodArgs['CimSession'] = Get-CimSession -InstanceId $BCDStore.GetCimSessionInstanceId() }
 
     $BCDStoreToUse = $null
 
@@ -174,7 +150,7 @@ Outputs one or more Windows boot applications in the form of BCD object instance
     if ($Type) {
         Get-BCDObject -BCDStore $BCDStoreToUse -WellKnownId $Type
     } else {
-        Get-BCDObject -BCDStore $BCDStoreToUse | Where-Object { $_.ApplicationImageType -eq 'WindowsBootApp' }
+        Get-BCDObject -BCDStore $BCDStoreToUse -WellKnownId BootApp
     }
 }
 
