@@ -1558,9 +1558,9 @@ Accepts a single BCD object instance to be deleted.
     )
 
     $CimMethodArgs = @{}
-    $CimSessionComputerName = $BCDStore.GetCimSessionComputerName()
+    $CimSessionComputerName = $BCDObject.Store.GetCimSessionComputerName()
 
-    if ($CimSessionComputerName) { $CimMethodArgs['CimSession'] = Get-CimSession -InstanceId $BCDStore.GetCimSessionInstanceId() }
+    if ($CimSessionComputerName) { $CimMethodArgs['CimSession'] = Get-CimSession -InstanceId $BCDObject.Store.GetCimSessionInstanceId() }
 
     $Result = Invoke-CimMethod -InputObject $BCDObject.Store -MethodName DeleteObject -Arguments @{ Id = $BCDObject.Id } @CimMethodArgs
 
