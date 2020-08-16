@@ -45,28 +45,12 @@ Outputs and object representing global debugger settings as well as the BCD obje
         [Parameter(ValueFromPipeline)]
         [PSTypeName('Microsoft.Management.Infrastructure.CimInstance#ROOT/WMI/BcdStore')]
         [Microsoft.Management.Infrastructure.CimInstance]
-        $BCDStore
+        $BCDStore = (Get-BCDStore)
     )
 
-    $CimMethodArgs = @{}
-    $CimSessionComputerName = $BCDStore.GetCimSessionComputerName()
+    $PSComputerName=$BCDStore.PSComputerName
 
-    $PSComputerName = $null
-    if ($CimSessionComputerName) {
-        $CimMethodArgs['CimSession'] = Get-CimSession -InstanceId $BCDStore.GetCimSessionInstanceId()
-        $PSComputerName = $CimSession.ComputerName
-    }
-
-    $BCDStoreToUse = $null
-
-    if ($BCDStore) {
-        $BCDStoreToUse = $BCDStore
-    } else {
-        # Use the system BCD store.
-        $BCDStoreToUse = Get-BCDStore @CimMethodArgs
-    }
-
-    $DbgSettingsObject = Get-BCDObject -BCDStore $BCDStoreToUse -WellKnownId DbgSettings
+    $DbgSettingsObject = Get-BCDObject -BCDStore $BCDStore -WellKnownId DbgSettings
 
     $DebugType  = $null
     $DebugPort  = $null
@@ -129,8 +113,8 @@ Outputs and object representing global debugger settings as well as the BCD obje
         }[[Int]$DebugStartValue.Integer]
     }
 
-    $KernelDebuggerSet = Get-BCDObject -BCDStore $BCDStoreToUse | Get-BCDElement -Name KernelDebuggerEnabled
-    $BootDebugSet = Get-BCDObject -BCDStore $BCDStoreToUse | Get-BCDElement -Name BootDebug
+    $KernelDebuggerSet = Get-BCDObject -BCDStore $BCDStore | Get-BCDElement -Name KernelDebuggerEnabled
+    $BootDebugSet = Get-BCDObject -BCDStore $BCDStore | Get-BCDElement -Name BootDebug
 
     $KernelDebuggerEnabledObjects = $KernelDebuggerSet | Where-Object { $_.Boolean } | Select-Object -ExpandProperty ObjectId
     $KernelDebuggerDisabledObjects = $KernelDebuggerSet | Where-Object { -not $_.Boolean } | Select-Object -ExpandProperty ObjectId

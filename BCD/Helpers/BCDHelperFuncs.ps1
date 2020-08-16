@@ -48,24 +48,10 @@ Outputs one or more Windows boot applications in the form of BCD object instance
         [Parameter(ValueFromPipeline)]
         [PSTypeName('Microsoft.Management.Infrastructure.CimInstance#ROOT/WMI/BcdStore')]
         [Microsoft.Management.Infrastructure.CimInstance]
-        $BCDStore
+        $BCDStore = (Get-BCDStore)
     )
 
-    $CimMethodArgs = @{}
-    $CimSessionComputerName = $BCDStore.GetCimSessionComputerName()
-
-    if ($CimSessionComputerName) { $CimMethodArgs['CimSession'] = Get-CimSession -InstanceId $BCDStore.GetCimSessionInstanceId() }
-
-    $BCDStoreToUse = $null
-
-    if ($BCDStore) {
-        $BCDStoreToUse = $BCDStore
-    } else {
-        # Use the system BCD store.
-        $BCDStoreToUse = Get-BCDStore @CimMethodArgs
-    }
-
-    Get-BCDObject -BCDStore $BCDStoreToUse -WellKnownId BootMgr
+    Get-BCDObject -BCDStore $BCDStore -WellKnownId BootMgr
 }
 
 function Get-BCDBootApplication {
@@ -130,27 +116,13 @@ Outputs one or more Windows boot applications in the form of BCD object instance
         [Parameter(ValueFromPipeline)]
         [PSTypeName('Microsoft.Management.Infrastructure.CimInstance#ROOT/WMI/BcdStore')]
         [Microsoft.Management.Infrastructure.CimInstance]
-        $BCDStore
+        $BCDStore = (Get-BCDStore)
     )
 
-    $CimMethodArgs = @{}
-    $CimSessionComputerName = $BCDStore.GetCimSessionComputerName()
-
-    if ($CimSessionComputerName) { $CimMethodArgs['CimSession'] = Get-CimSession -InstanceId $BCDStore.GetCimSessionInstanceId() }
-
-    $BCDStoreToUse = $null
-
-    if ($BCDStore) {
-        $BCDStoreToUse = $BCDStore
-    } else {
-        # Use the system BCD store.
-        $BCDStoreToUse = Get-BCDStore @CimMethodArgs
-    }
-
     if ($Type) {
-        Get-BCDObject -BCDStore $BCDStoreToUse -WellKnownId $Type
+        Get-BCDObject -BCDStore $BCDStore -WellKnownId $Type
     } else {
-        Get-BCDObject -BCDStore $BCDStoreToUse -WellKnownId BootApp
+        Get-BCDObject -BCDStore $BCDStore -WellKnownId BootApp
     }
 }
 
